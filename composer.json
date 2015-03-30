@@ -5,7 +5,8 @@
     "symfony/yaml":"~2.4",
     "symfony/config":"v2.2.0",
     "deralex/yaml-config-service-provider": "1.0.x-dev",
-    "rkr/sqlite-key-value-store": "dev-master"
+    "rkr/sqlite-key-value-store": "dev-master",
+    "drupalci/results-api": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "4.4.*@dev",

@@ -15,11 +15,6 @@ class Jenkins {
   /**
    * @var string
    */
-  protected $protocol = 'http';
-
-  /**
-   * @var string
-   */
   protected $host = '';
 
   /**
@@ -56,11 +51,10 @@ class Jenkins {
    * Helper function to build the URL of the Jenkins host.
    */
   protected function buildUrl() {
-    $protocol = $this->getProtocol();
     $host = $this->getHost();
     $port = $this->getPort();
     $build = $this->getBuild();
-    return $protocol . '://' . $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
+    return $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
   }
 
   /**
@@ -175,20 +169,6 @@ class Jenkins {
    */
   public function setPort($port) {
     $this->port = $port;
-  }
-
-  /**
-   * @return string
-   */
-  public function getProtocol() {
-    return $this->protocol;
-  }
-
-  /**
-   * @param string $protocol
-   */
-  public function setProtocol($protocol) {
-    $this->protocol = $protocol;
   }
 
   /**

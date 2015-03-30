@@ -1,4 +1,10 @@
 jenkins:
-  host:  'dispatcher.dev.drupalci.org'
-  token: 'rNHMBIqAObUv2JuF0rPZ'
+  host:  'http://jenkins.org'
+  port:  '8080'
+  token: '123456'
   job:   'test'
+
+results:
+  host:     'http://results.org'
+  username: 'admin'
+  password: 'changethis'

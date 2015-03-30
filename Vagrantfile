@@ -1,10 +1,10 @@
-# Drupal CI Jenkins.
+# Drupal CI API.
 #
 # Provides a local development environment for Drupal's Continuous Integration
 # Jenkins based platform.
 #
 
-box      = 'puppetlabs/centos-6.5-64-puppet'
+box      = 'ubuntu/trusty64'
 hostname = 'drupalci-api'
 domain   = 'dev'
 cpus     = '1'
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
   if RUBY_PLATFORM =~ /linux|darwin/
     config.vm.synced_folder(
       ".",
-      "/var/www/api/current",
+      "/var/www/api",
       :nfs => true,
       :map_uid => 0,
       :map_gid => 0,
@@ -49,5 +49,5 @@ Vagrant.configure("2") do |config|
   end
 
   # Provision.
-  config.vm.provision :shell, :path => "puppet/vagrant.sh"
+  config.vm.provision :shell, :path => "puppet/scripts/vagrant.sh"
 end

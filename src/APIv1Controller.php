@@ -4,11 +4,11 @@ namespace API;
 
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
+use DrupalCIResultsApi\API;
 
 /**
  * Controller for Version 1 of the DrupalCI API.
  */
-
 class APIv1Controller extends APIController implements APIInterface {
 
   /**
@@ -29,6 +29,7 @@ class APIv1Controller extends APIController implements APIInterface {
     $repository = !empty($_GET['repository']) ? $_GET['repository'] : '';
     $branch = !empty($_GET['branch']) ? $_GET['branch'] : '';
     $patch = !empty($_GET['patch']) ? $_GET['patch'] : '';
+    $title = !empty($_GET['title']) ? $_GET['title'] : '';
 
     // Check params.
     if (empty($repository)) {
@@ -37,17 +38,32 @@ class APIv1Controller extends APIController implements APIInterface {
     if (empty($branch)) {
       return 'Please provide a branch.';
     }
+    if (empty($title)) {
+      return 'Please provide a title.';
+    }
 
-    // Set for sending.
+    error_log($app['config']['results']['host']);
+    error_log($app['config']['results']['username']);
+    error_log($app['config']['results']['password']);
+
+    // Create a results site "stub" so the Jenkins slaves and send results
+    // to it.
+    $api = new API();
+    $api->setUrl($app['config']['results']['host']);
+    $api->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    $nid = $api->create($title);
+
+    // Now send these details over to the Jenkins instance so the job can be
+    // processed.
     $query = array(
       'repository' => $repository,
       'branch' => $branch,
       'patch' => $patch,
+      'results' => $nid,
     );
-
-    // Let the request begin.
     $jenkins = new Jenkins();
     $jenkins->setHost($app['config']['jenkins']['host']);
+    $jenkins->setPort($app['config']['jenkins']['port']);
     $jenkins->setToken($app['config']['jenkins']['token']);
     $jenkins->setBuild($app['config']['jenkins']['job']);
     $jenkins->setQuery($query);
@@ -58,16 +74,15 @@ class APIv1Controller extends APIController implements APIInterface {
       return new Response("The submission was not successful.");
     }
 
-    // Check if we already have an existing build.
-    $store = $app['db']->get('builds');
-    $build = json_decode($store->get('alfred', '[]'), true);
-    if ($builds) {
-      return new Response('A build already exists in the dispatch queue: ' . $url);
-    }
+    return new Response($nid);
+  }
 
-    // Insert some records.
-    $app['db.builds']->insert("dispatcher", array("url" => $url));
-    return new Response('A build was created in the dispatcher queue: ' . $url);
+  /**
+   * Get the details of a job.
+   * @return id.
+   */
+  public function jobGet(Application $app) {
+
   }
 
   /**

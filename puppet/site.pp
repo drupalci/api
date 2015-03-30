@@ -2,19 +2,33 @@
 
 node default {
 
-  include yum::repo::remi_php56
+  include apt
+  include mysql::server
+  include mysql::server::mysqltuner
+  include mysql::client
+  include mysql::bindings
 
   ##
   # PHP.
   ##
 
-  package {[
-    'php-common',
-    'php-cli',
-    'nmap',
-    'php-pdo',
-  ]:
-    ensure => 'latest',
+  apt::ppa { 'ppa:ondrej/php5-oldstable': }
+  package { 'libapache2-mod-php5': ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+  package { 'php5-gd':             ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+  package { 'php5-mcrypt':         ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+  package { 'php5-curl':           ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+  package { 'php5-xdebug':         ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+  package { 'php5-mysql':          ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
+
+  include pear
+  pear::package { 'phing':
+    version    => '2.4.13',
+    repository => 'pear.phing.info',
+  }
+  
+  class { 'composer':
+    command_name => 'composer',
+    target_dir   => '/usr/local/bin'
   }
 
   ##
@@ -31,59 +45,29 @@ node default {
 
   apache::vhost { $fqdn:
     port           => '80',
-    docroot        => '/var/www/api/current/public',
+    docroot        => '/var/www/api/public',
     manage_docroot => false,
     priority       => '25',
     override       => [ 'ALL' ],
+    setenvif       => [
+      'X-Forwarded-Proto https HTTPS=on',
+    ],
   }
 
-  # Deploy directory structure.
-  file {[
-    '/var/www/api/releases',
-    '/var/www/api/shared',
-    '/var/cache/api',
-  ]:
-    ensure => 'directory',
-    owner  => 'apache',
-    group  => 'apache',
-    mode   => '0644',
-  }
-
-  # Create a dummy configuration file if it does not exist.
-  exec { "config_file":
-    command => "echo 'Put some config here.' > /var/www/api/shared/config.yaml",
-    unless  => "test -s /var/www/api/shared/config.yaml",
-  }
-
-  ##
-  # Firewall.
-  ##
-
-  include firewall
-  firewall { '000 accept all icmp':
-    proto   => 'icmp',
-    action  => 'accept',
-  }
-  firewall { '001 accept all to lo interface':
-    proto   => 'all',
-    iniface => 'lo',
-    action  => 'accept',
-  }
-  firewall { '002 accept related established rules':
-    proto   => 'all',
-    state => ['RELATED', 'ESTABLISHED'],
-    action  => 'accept',
-  }
-  firewall { '100 allow http and https access':
-    port   => [80, 443],
-    proto  => tcp,
-    action => accept,
+  mysql::db { 'drupal':
+    user     => 'drupal',
+    password => 'drupal',
+    host     => 'localhost',
   }
 
   ##
   # Misc.
   ##
 
-  Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ] }
+  # Ensure we have an update to date set of packages.
+  exec { 'apt-update':
+    command => '/usr/bin/apt-get update'
+  }
+  Exec["apt-update"] -> Package <| |>
 
 }

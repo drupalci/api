@@ -27,11 +27,6 @@ else {
 $app->register(new YamlConfigServiceProvider($config));
 
 /**
- * Database.
- */
-$app['db'] = new PdoSqliteContextRepository('sqlite:///var/cache/api/builds.db');
-
-/**
  * Handling.
  */
 $app->error(function (\Exception $e, $code) {
