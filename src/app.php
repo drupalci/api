@@ -1,7 +1,7 @@
 <?php
 
 $loader = require_once __DIR__.'/../vendor/autoload.php';
-$loader->add('', __DIR__);
+//$loader->add('', __DIR__);
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
@@ -21,7 +21,7 @@ if (file_exists('/etc/drupalci-results.yaml')) {
     $config = '/etc/drupalci-results.yaml';
 }
 else {
-    $config = '../config/config-test.yaml';
+    $config = __DIR__ . '/../config/config-test.yaml';
 }
 
 /**
@@ -49,6 +49,24 @@ foreach ($app['config']['users'] as $username => $password) {
     );
 }
 
+// Set up JSON as a middleware.
+$app->before(function (Request $request) {
+  if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+    $data = json_decode($request->getContent(), true);
+    $request->request->replace(is_array($data) ? $data : array());
+  }
+});
+
+// Make sure we wrap JSONP in a callback if present.
+$app->after(function (Request $request, Response $response) {
+  if ($response instanceof JsonResponse) {
+    $callback = $request->get('callback', '');
+    if ($callback) {
+      $response->setCallback($callback);
+    }
+  }
+});
+
 // Security definition.
 $app->register(new SecurityServiceProvider());
 $app['security.firewalls'] = array(
@@ -74,4 +92,4 @@ $app['routes'] = $app->extend('routes', function (RouteCollection $routes, Appli
     return $routes;
 });
 
-$app->run();
+return $app;

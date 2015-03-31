@@ -15,9 +15,19 @@ class JenkinsTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildUrl() {
     // Build.
-    $guzzle = new GuzzleMock();
-    $jenkins = new Jenkins($guzzle);
-    $jenkins->setClient($guzzle);
+    $mock_guzzle = $this->getMockBuilder('\GuzzleHttp\Client')
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_guzzle->expects($this->any())
+      ->method('get')
+      ->willReturnCallback(
+          function ($url, $options) {
+            return [$url, $options];
+          }
+        );
+
+    $jenkins = new Jenkins($mock_guzzle);
     $jenkins->setProtocol('https');
     $jenkins->setHost('localhost');
     $jenkins->setPort('9090');
@@ -43,7 +53,7 @@ class JenkinsTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($required, $request);
 
     // Check a successful return message.
-    // @todo make this a separate test.
+    // @todo: turn this into a new test.
 //    $message = $jenkins->send();
 //    $this->assertEquals('The message has been sent to the dispatcher.', $message);
   }

@@ -21,6 +21,9 @@
   "autoload": {
     "psr-0": {
       "API\\": "src/"
+    },
+    "psr-4": {
+      "API\\Tests\\": "tests/"
     }
   }
 }

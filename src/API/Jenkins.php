@@ -47,8 +47,10 @@ class Jenkins {
    */
   protected $client = false;
 
-  public function __construct() {
-    $client = new GuzzleClient();
+  /**
+   * @param \GuzzleHttp\Client $client
+   */
+  public function __construct(\GuzzleHttp\Client $client = NULL) {
     $this->setClient($client);
   }
 
