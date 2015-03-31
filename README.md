@@ -61,6 +61,7 @@ Restarts the job. Implies cancel. Creates new id.
 	"repository": "git://git.drupal.org/project/drupal.git",
 	"branch": "8.0.x",
 	"commit": "12353245",
+	"issue": "https://www.drupal.org/node/2304461",
 	"patch": "https://www.drupal.org/files/issues/2304461-86.patch",
 	"tags": [
 		"Drupal 8",
@@ -87,9 +88,7 @@ Restarts the job. Implies cancel. Creates new id.
 			]
 		},{
 			"type": "codesniffer",
-			"php": [
-				"5.4"
-			]
+			"php": "5.4"
 		}
 	]
 }
@@ -213,6 +212,7 @@ Restarts the job. Implies cancel. Creates new id.
 	"repository": "git://git.drupal.org/project/drupal.git",
 	"branch": "8.0.x",
 	"commit": "12353245",
+	"issue": "https://www.drupal.org/node/2304461",
 	"patch": "https://www.drupal.org/files/issues/2304461-86.patch",
 		"tags": [
 		"Drupal 8",
