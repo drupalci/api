@@ -32,7 +32,7 @@ class V1Controller extends BaseController {
     try {
       $job = Job::createFromRequest($request);
     } catch (\InvalidArgumentException $e) {
-      $app->abort(400, 'Job needs repository and branch.');
+      $app->abort(400, $e->getMessage());
     }
 
     // Create a results site "stub" so the Jenkins slaves and send results
@@ -71,10 +71,10 @@ class V1Controller extends BaseController {
     $results->setUrl($app['config']['results']['host']);
     $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
 
-    $job =  $results->getJob($id);
+    // @todo: Replace this with try block.
+    $job =  $results->getStatus($id);
     if (!$job) {
       $app->abort(404, 'Unable to find job.');
-      return;
     }
     $app->json($job, 200);
   }

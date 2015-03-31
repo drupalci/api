@@ -7,6 +7,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
 use Silex\Provider\SecurityServiceProvider;
@@ -33,8 +36,11 @@ $app->register(new YamlConfigServiceProvider($config));
  * Handling.
  */
 $app->error(function (\Exception $e, $code) {
-    error_log($e);
-    return "Something went wrong. Please contact the DrupalCI team.";
+  if ($e instanceof HttpException) {
+    return new Response($e->getMessage(), $e->getStatusCode());
+  }
+  error_log($e);
+  return "Something went wrong. Please contact the DrupalCI team.";
 });
 
 /**
@@ -68,7 +74,7 @@ $app->after(function (Request $request, Response $response) {
 });
 
 // Security definition.
-$app->register(new SecurityServiceProvider());
+/**$app->register(new SecurityServiceProvider());
 $app['security.firewalls'] = array(
     // Login URL is open to everybody.
     'default' => array(
@@ -80,7 +86,7 @@ $app['security.firewalls'] = array(
 );
 $app['security.access_rules'] = array(
     array('^.*$', 'ROLE_USER'),
-);
+);*/
 
 /**
  * Routing.

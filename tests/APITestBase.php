@@ -10,7 +10,6 @@ class APITestBase extends WebTestCase {
     return '/drupalci/api/1';
   }
 
-
   public function createApplication() {
     $app = include __DIR__ . '/../src/app.php';
     return $app;

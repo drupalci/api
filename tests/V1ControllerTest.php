@@ -20,16 +20,17 @@ class V1ControllerTest extends APITestBase {
 
   public function testHomeGet() {
     $client = $this->createClient();
-    $crawler = $client->request('GET', $this->getBaseUrl());
+    $crawler = $client->request('GET', '/');
 
-    $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    $this->assertEquals(200, $client->getResponse()->getStatusCode());
   }
 
   public function testJobPostNoContent() {
     $client = $this->createClient();
+    $path = $this->getBaseUrl() . '/job';
     $crawler = $client->request('POST', $this->getBaseUrl() . '/job');
 
-    $this->assertEquals(401, $client->getResponse()->getStatusCode());
+    $this->assertEquals(400, $client->getResponse()->getStatusCode());
   }
 
   public function testGetJob404() {
@@ -38,6 +39,5 @@ class V1ControllerTest extends APITestBase {
 
     $this->assertEquals(404, $client->getResponse()->getStatusCode());
   }
-
 
 }
