@@ -14,6 +14,8 @@ use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+use API\Jenkins;
+use API\Results;
 
 $app = new Silex\Application();
 
@@ -31,6 +33,32 @@ else {
  * Services.
  */
 $app->register(new YamlConfigServiceProvider($config));
+
+/**
+ * Jenkins is a service.
+ */
+$app['service'] = $app->share(
+  function ($app) {
+    $jenkins = new Jenkins();
+    $jenkins->setHost($app['config']['jenkins']['host']);
+    $jenkins->setPort($app['config']['jenkins']['port']);
+    $jenkins->setToken($app['config']['jenkins']['token']);
+    $jenkins->setBuild($app['config']['jenkins']['job']);
+    return $jenkins;
+  }
+);
+
+/**
+ * Results is a service.
+ */
+$app['results'] = $app->share(
+  function ($app) {
+    $results = new Results();
+    $results->setUrl($app['config']['results']['host']);
+    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    return $results;
+  }
+);
 
 /**
  * Handling.
