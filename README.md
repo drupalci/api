@@ -19,6 +19,7 @@ The Job has the following properties:
 
 - id: Assigned when the Job is created by the API implementation.
 - created: Timestamp of creation.
+- type: The test type to run. e.g. 'simpletest', 'phpunit'...
 - repository: Repository to test against.
 - branch: Branch of the repository to check out.
 - patch: File name of patch to apply to the branch of the repository.
