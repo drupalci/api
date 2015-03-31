@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 class Job implements \JsonSerializable {
 
   protected $id;
+  protected $type;
+  protected $issue;
   protected $created;
   protected $repository;
   protected $branch;
@@ -32,9 +34,9 @@ class Job implements \JsonSerializable {
     // Sanity check.
     if (empty($query['repository']) || empty($query['branch'])) {
       // @todo: Make a meaningful exception class.
-      throw new \Exception('Job start requests need at least a repository and a branch.');
+      throw new \InvalidArgumentException('Job start requests need at least a repository and a branch.');
     }
-    $job = new Job();
+    $job = new static();
     $job->setBranch($query['branch']);
     $job->setPatch($query['patch']);
     $job->setRepository($query['repository']);
@@ -187,12 +189,13 @@ class Job implements \JsonSerializable {
     $result = new \stdClass();
     $properties = [
       'id',
+      'issue',
+      'type',
       'repository',
       'branch',
       'patch',
       'status',
       'result',
-      'log',
       'jenkinsUri'
     ];
     foreach ($properties as $property) {

@@ -18,11 +18,20 @@ use API\Tests\APITestBase;
  */
 class V1ControllerTest extends APITestBase {
 
-  public function testJobGet() {
+  public function testHomeGet() {
     $client = $this->createClient();
-    $crawler = $client->request('GET', $this->getBaseUrl() . '/job');
+    $crawler = $client->request('GET', $this->getBaseUrl());
 
     $this->assertEquals(404, $client->getResponse()->getStatusCode());
   }
+
+  public function testJobPostNoContent() {
+    $client = $this->createClient();
+    $crawler = $client->request('POST', $this->getBaseUrl() . '/job');
+
+    $this->assertEquals(401, $client->getResponse()->getStatusCode());
+  }
+
+  
 
 }

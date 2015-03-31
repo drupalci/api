@@ -28,28 +28,19 @@ class V1Controller extends BaseController {
     // Get our params.
     // @todo, Find a better way to do this.
     $request = $app['request'];
-    $repository = $request->get('repository', '');
-    $branch = $request->get('branch', '');
-    $patch = $request->get('patch', '');
-    $title = $request->get('title', '');
 
-    // Check params.
-    if (empty($repository)) {
-      $app->abort(400, 'Please provide a repository.');
-    }
-    if (empty($branch)) {
-      $app->abort(400, 'Please provide a branch.');
-    }
-    if (empty($title)) {
-      $app->abort(400, 'Please provide a title.');
+    try {
+      $job = Job::createFromRequest($request);
+    } catch (\InvalidArgumentException $e) {
+      $app->abort(400, 'Job needs repository and branch.');
     }
 
     // Create a results site "stub" so the Jenkins slaves and send results
     // to it.
-    $api = new API();
-    $api->setUrl($app['config']['results']['host']);
-    $api->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
-    $nid = $api->create($title);
+    $results = new Results();
+    $results->setUrl($app['config']['results']['host']);
+    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    $job = $results->createResultForJob($job);
 
     // Now send these details over to the Jenkins instance so the job can be
     // processed.
@@ -76,13 +67,16 @@ class V1Controller extends BaseController {
   }
 
   public function jobStatus(Application $app, $id) {
-    $api = new API();
-    $api->setUrl($app['config']['results']['host']);
-    $api->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    $results = new Results();
+    $results->setUrl($app['config']['results']['host']);
+    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
 
-    echo $id;
-
-    return $api->get($id);
+    $job =  $results->getJob($id);
+    if (!$job) {
+      $app->abort(404, 'Unable to find job.');
+      return;
+    }
+    $app->json($job, 200);
   }
 
   /**
@@ -91,7 +85,7 @@ class V1Controller extends BaseController {
    */
   public function auth(Application $app, $token) {
     // http://silex.sensiolabs.org/doc/providers/security.html
-    return new Response("Not supported.");
+    $app->abort(500, 'Not supported.');
   }
 
 }
