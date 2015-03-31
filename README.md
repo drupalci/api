@@ -83,15 +83,7 @@ Restarts the job. Implies cancel. Creates new id.
 		},{
 			"type": "phpunit",
 			"php": [
-				"5.4",
-				"5.5",
-				"5.6",
-				"master"
-			],
-			"db": [
-				"mysql",
-				"postgres",
-				"mongodb"
+				"5.4"
 			]
 		},{
 			"type": "codesniffer",
@@ -110,76 +102,100 @@ Restarts the job. Implies cancel. Creates new id.
 	"builds": [
 		{
 			"id": "1",
-			"application": "php5.4",
-			"service": "mysql",
+			"type": "simpletest",
+			"php": "5.4",
+			"db": "mysql",
 			"results": "https://results.drupalci.org/node/1",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/1"
 		},{
 			"id": "2",
-			"application": "php5.5",
-			"service": "mysql",
+			"type": "simpletest",
+			"php": "php5.5",
+			"db": "mysql",
 			"results": "https://results.drupalci.org/node/2",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/2"
 		},{
 			"id": "3",
-			"application": "php5.6",
-			"service": "mysql",
+			"type": "simpletest",
+			"php": "php5.6",
+			"db": "mysql",
 			"results": "https://results.drupalci.org/node/3",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/3"
 		},{
 			"id": "4",
-			"application": "php7.x",
-			"service": "mysql",
+			"type": "simpletest",
+			"php": "master",
+			"db": "mysql",
 			"results": "https://results.drupalci.org/node/4",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/4"
 		},{
 			"id": "5",
-			"application": "php5.4",
-			"service": "postgres",
+			"type": "simpletest",
+			"php": "php5.4",
+			"db": "postgres",
 			"results": "https://results.drupalci.org/node/5",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/5"
 		},{
 			"id": "6",
-			"application": "php5.5",
-			"service": "postgres",
+			"type": "simpletest",
+			"php": "php5.5",
+			"db": "postgres",
 			"results": "https://results.drupalci.org/node/6",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/6"
 		},{
 			"id": "7",
-			"application": "php5.6",
-			"service": "postgres",
+			"type": "simpletest",
+			"php": "php5.6",
+			"db": "postgres",
 			"results": "https://results.drupalci.org/node/7",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/7"
 		},{
 			"id": "8",
-			"application": "php7.x",
-			"service": "postgres",
+			"type": "simpletest",
+			"php": "master",
+			"db": "postgres",
 			"results": "https://results.drupalci.org/node/8",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/8"
 		}{
 			"id": "9",
-			"application": "php5.4",
-			"service": "mongodb",
+			"type": "simpletest",
+			"php": "php5.4",
+			"db": "mongodb",
 			"results": "https://results.drupalci.org/node/9",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/9"
 		},{
 			"id": "10",
-			"application": "php5.5",
-			"service": "mongodb",
+			"type": "simpletest",
+			"php": "php5.5",
+			"db": "mongodb",
 			"results": "https://results.drupalci.org/node/10",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/10"
 		},{
 			"id": "11",
-			"application": "php5.6",
-			"service": "mongodb",
+			"type": "simpletest",
+			"php": "php5.6",
+			"db": "mongodb",
 			"results": "https://results.drupalci.org/node/11",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/11"
 		},{
 			"id": "12",
-			"application": "php7.x",
-			"service": "mongodb",
+			"type": "simpletest",
+			"php": "master",
+			"db": "mongodb",
 			"results": "https://results.drupalci.org/node/12",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/12"
+		},{
+			"id": "13",
+			"type": "phpunit",
+			"php": "5.4",
+			"results": "https://results.drupalci.org/node/13",
+			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/13"
+		},{
+			"id": "14",
+			"type": "codesniffer",
+			"php": "5.4",
+			"results": "https://results.drupalci.org/node/14",
+			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/14"
 		}
 	],
 }
@@ -191,7 +207,8 @@ Restarts the job. Implies cancel. Creates new id.
 {
 	"id": "1",
 	"title": "This is a test build",
-	"status": "new",
+	"type": "simpletest",
+	"status": "failed",
 	"result": "100 Passed, 1000000 Failed",
 	"repository": "git://git.drupal.org/project/drupal.git",
 	"branch": "8.0.x",
