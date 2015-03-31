@@ -2,8 +2,6 @@
 
 namespace API;
 
-use API\GuzzleMock;
-
 /**
  * Class JenkinsTest.
  * Test the functionality of the Jenkins class.
