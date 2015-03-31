@@ -53,9 +53,9 @@ Restarts the job. Implies cancel. Creates new id.
 
 #### Structure
 
-```json
-Input
+##### Input
 
+```json
 {
 	"title": "This is a test build",
 	"repository": "git://git.drupal.org/project/drupal.git",
@@ -101,9 +101,11 @@ Input
 		}
 	]
 }
+```
 
-Return
+##### Return
 
+```json
 {
 	"builds": [
 		{
@@ -181,7 +183,11 @@ Return
 		}
 	],
 }
+```
 
+##### Single build
+
+```json
 {
 	"id": "1",
 	"title": "This is a test build",
