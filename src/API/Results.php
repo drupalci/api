@@ -10,7 +10,7 @@ class Results {
   /**
    * Gets a new job from the Results server.
    */
-  public function getNewJob() {
+  public function createNewJob() {
 
   }
 
@@ -21,6 +21,28 @@ class Results {
    */
   public function getStatus($id) {
 
+  }
+
+  /**
+   *
+   * @param string $url
+   */
+  public function setUrl($url) {
+
+  }
+
+  /**
+   * @param array $auth
+   */
+  public function setAuth($auth) {
+
+  }
+
+  /**
+   * @param \API\Job $job
+   */
+  public function createResultForJob(Job $job) {
+    return $job;
   }
 
 }
