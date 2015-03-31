@@ -45,14 +45,7 @@ class Jenkins {
   /**
    * @var \GuzzleHttp\Client
    */
-  protected $client = false;
-
-  /**
-   * @param \GuzzleHttp\Client $client
-   */
-  public function __construct(\GuzzleHttp\Client $client = NULL) {
-    $this->setClient($client);
-  }
+  protected $client = NULL;
 
   /**
    * Helper function to build the URL of the Jenkins host.
@@ -62,6 +55,9 @@ class Jenkins {
     $host = $this->getHost();
     $port = $this->getPort();
     $build = $this->getBuild();
+    if (empty($protocol) || empty($host) || empty($port) || empty($build)) {
+      throw new \InvalidArgumentException('Jenkins needs protocol, host, build, and port.');
+    }
     return $protocol . '://' . $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
   }
 
@@ -69,24 +65,6 @@ class Jenkins {
    * Helper function to build the request.
    */
   public function sendRequest() {
-    // Ensure we have a host.
-    $host = $this->getHost();
-    if (!$host) {
-      return 'Please provide a Jenkins host.';
-    }
-
-    // Ensure we have a build.
-    $build = $this->getBuild();
-    if (!$build) {
-      return 'Please provide a Jenkins build.';
-    }
-
-    // Ensure we have a port.
-    $port = $this->getPort();
-    if (!$port) {
-      return 'Please provide a Jenkins port.';
-    }
-
     // Add the Token to the query if it is set.
     $token = $this->getToken();
     $query = $this->getQuery();
@@ -141,6 +119,9 @@ class Jenkins {
    * @return \GuzzleHttp\Client
    */
   public function getClient() {
+    if ($this->client === NULL) {
+      $this->client = new GuzzleClient;
+    }
     return $this->client;
   }
 

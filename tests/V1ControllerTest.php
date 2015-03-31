@@ -35,7 +35,6 @@ class V1ControllerTest extends APITestBase {
 
   public function testJobPost() {
     // Build.
-
     $client = $this->createClient();
     $crawler = $client->request(
       'POST', $this->getBaseUrl() . '/job',
