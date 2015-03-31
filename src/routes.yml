@@ -2,7 +2,7 @@
 
 home:
   path: /
-  defaults: { _controller: 'API\APIController::home' }
+  defaults: { _controller: 'API\BaseController::home' }
 
 api_1:
   prefix: /drupalci/api/1

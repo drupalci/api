@@ -9,7 +9,7 @@ use Silex\Application;
  * Defined interface for DrupalCI API.
  */
 
-interface APIInterface {
+interface BaseInterface {
 
   /**
    * Information on how to use the API.

@@ -29,14 +29,6 @@ GIT
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
 
 GIT
-  remote: git://github.com/puppetlabs/puppetlabs-mysql.git
-  ref: 2.1.0
-  sha: e303e361b7a1e7c1a808e92a02a8eacaaac3a498
-  specs:
-    puppetlabs-mysql (2.1.0)
-      puppetlabs-stdlib (>= 2.2.1)
-
-GIT
   remote: git://github.com/puppetlabs/puppetlabs-stdlib.git
   ref: 4.1.0
   sha: 1ffd72daaaf21e71e762b6cd543043680bdb6694
@@ -62,7 +54,6 @@ DEPENDENCIES
   puppetlabs-apache (>= 0)
   puppetlabs-apt (>= 0)
   puppetlabs-concat (>= 0)
-  puppetlabs-mysql (>= 0)
   puppetlabs-stdlib (>= 0)
   treehouseagency-pear (>= 0)
   willdurand-composer (>= 0)

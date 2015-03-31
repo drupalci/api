@@ -10,7 +10,7 @@ use Silex\Application;
  * A base controller class that we can extend from for future API.
  */
 
-class APIController implements APIInterface {
+class BaseController implements BaseInterface {
 
   /**
    * Information on how to use the API.

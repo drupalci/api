@@ -2,10 +2,10 @@
   "require": {
     "silex/silex": "~1.2",
     "guzzlehttp/guzzle": "*",
-    "symfony/yaml":"~2.4",
-    "symfony/config":"v2.2.0",
-    "deralex/yaml-config-service-provider": "1.0.x-dev",
-    "rkr/sqlite-key-value-store": "dev-master",
+    "symfony/yaml":"~2.6",
+    "symfony/config":"~2.6",
+    "symfony/security":"~2.6",
+    "deralex/yaml-config-service-provider": "1.0.1",
     "drupalci/results-api": "dev-master"
   },
   "require-dev": {
@@ -15,8 +15,5 @@
   "minimum-stability": "dev",
   "config": {
     "bin-dir": "bin/"
-  },
-  "autoload": {
-    "psr-4" : { "API\\": "src/" }
   }
 }

@@ -9,7 +9,8 @@ use DrupalCIResultsApi\API;
 /**
  * Controller for Version 1 of the DrupalCI API.
  */
-class APIv1Controller extends APIController implements APIInterface {
+
+class V1Controller extends BaseController {
 
   /**
    * Information on how to use the API.
@@ -42,10 +43,6 @@ class APIv1Controller extends APIController implements APIInterface {
       return 'Please provide a title.';
     }
 
-    error_log($app['config']['results']['host']);
-    error_log($app['config']['results']['username']);
-    error_log($app['config']['results']['password']);
-
     // Create a results site "stub" so the Jenkins slaves and send results
     // to it.
     $api = new API();
@@ -77,12 +74,14 @@ class APIv1Controller extends APIController implements APIInterface {
     return new Response($nid);
   }
 
-  /**
-   * Get the details of a job.
-   * @return id.
-   */
-  public function jobGet(Application $app) {
+  public function jobStatus(Application $app, $id) {
+    $api = new API();
+    $api->setUrl($app['config']['results']['host']);
+    $api->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
 
+    echo $id;
+
+    return $api->get($id);
   }
 
   /**
