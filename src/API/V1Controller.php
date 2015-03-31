@@ -27,20 +27,21 @@ class V1Controller extends BaseController {
   public function jobRun(Application $app) {
     // Get our params.
     // @todo, Find a better way to do this.
-    $repository = !empty($_GET['repository']) ? $_GET['repository'] : '';
-    $branch = !empty($_GET['branch']) ? $_GET['branch'] : '';
-    $patch = !empty($_GET['patch']) ? $_GET['patch'] : '';
-    $title = !empty($_GET['title']) ? $_GET['title'] : '';
+    $request = $app['request'];
+    $repository = $request->get('repository', '');
+    $branch = $request->get('branch', '');
+    $patch = $request->get('patch', '');
+    $title = $request->get('title', '');
 
     // Check params.
     if (empty($repository)) {
-      return 'Please provide a repository.';
+      $app->abort(400, 'Please provide a repository.');
     }
     if (empty($branch)) {
-      return 'Please provide a branch.';
+      $app->abort(400, 'Please provide a branch.');
     }
     if (empty($title)) {
-      return 'Please provide a title.';
+      $app->abort(400, 'Please provide a title.');
     }
 
     // Create a results site "stub" so the Jenkins slaves and send results
@@ -68,7 +69,7 @@ class V1Controller extends BaseController {
 
     // Check the return to make sure we had a successful submission.
     if (empty($url)) {
-      return new Response("The submission was not successful.");
+      $app->abort(500, 'Unable to submit to test builder.');
     }
 
     return new Response($nid);

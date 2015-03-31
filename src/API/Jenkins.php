@@ -15,6 +15,11 @@ class Jenkins {
   /**
    * @var string
    */
+  protected $protocol = 'http';
+
+  /**
+   * @var string
+   */
   protected $host = '';
 
   /**
@@ -43,7 +48,7 @@ class Jenkins {
   protected $client = false;
 
   public function __construct() {
-    $client = new GuzzleClient;
+    $client = new GuzzleClient();
     $this->setClient($client);
   }
 
@@ -51,10 +56,11 @@ class Jenkins {
    * Helper function to build the URL of the Jenkins host.
    */
   protected function buildUrl() {
+    $protocol = $this->getProtocol();
     $host = $this->getHost();
     $port = $this->getPort();
     $build = $this->getBuild();
-    return $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
+    return $protocol . '://' . $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
   }
 
   /**
@@ -151,7 +157,22 @@ class Jenkins {
   }
 
   /**
-   * @param string $host
+   * @param string
+   */
+  public function setProtocol($protocol) {
+    $this->protocol = $protocol;
+    return $this;
+  }
+
+  /**
+   * @return string
+   */
+  public function getProtocol() {
+    return $this->protocol;
+  }
+
+  /**
+   * @param string
    */
   public function setHost($host) {
     $this->host = $host;
