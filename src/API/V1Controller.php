@@ -57,7 +57,7 @@ class V1Controller extends BaseController {
       $app->abort(500, 'Unable to submit to test builder.');
     }
 
-    return new Response($nid);
+    return new Response($url);
   }
 
   public function jobStatus(Application $app, $id) {

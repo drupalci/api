@@ -12,6 +12,22 @@ class APITestBase extends WebTestCase {
 
   public function createApplication() {
     $app = include __DIR__ . '/../src/app.php';
+
+    $mock_guzzle = $this->getMockBuilder('\GuzzleHttp\Client')
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_guzzle->expects($this->any())
+      ->method('get')
+      ->willReturnCallback(
+          function ($url, $options) {
+            return [$url, $options];
+          }
+        );
+
+    $jenkins = $app['jenkins'];
+    $jenkins->setClient($mock_guzzle);
+
     return $app;
   }
 

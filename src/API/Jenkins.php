@@ -115,9 +115,9 @@ class Jenkins {
     // We get the location of the build in the queue so we can track it.
     // First we make sure it is in the right format.
     $url = $this->buildUrl();
-    $location = $response->getHeader('Location');
+    $location = $response[0];
     if (strpos($location, $url)) {
-      return false;
+      return FALSE;
     }
 
     return $location;

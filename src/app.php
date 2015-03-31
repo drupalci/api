@@ -37,7 +37,7 @@ $app->register(new YamlConfigServiceProvider($config));
 /**
  * Jenkins is a service.
  */
-$app['service'] = $app->share(
+$app['jenkins'] = $app->share(
   function ($app) {
     $jenkins = new Jenkins();
     $jenkins->setHost($app['config']['jenkins']['host']);

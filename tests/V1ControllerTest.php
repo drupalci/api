@@ -33,6 +33,22 @@ class V1ControllerTest extends APITestBase {
     $this->assertEquals(400, $client->getResponse()->getStatusCode());
   }
 
+  public function testJobPost() {
+    // Build.
+
+    $client = $this->createClient();
+    $crawler = $client->request(
+      'POST', $this->getBaseUrl() . '/job',
+      [],
+      [],
+      array('CONTENT_TYPE' => 'application/json'),
+      '{"repository":"r","branch":"b", "patch":"p"}'
+    );
+    $response = $client->getResponse();
+
+    $this->assertEquals(200, $client->getResponse()->getStatusCode());
+  }
+
   public function testGetJob404() {
     $client = $this->createClient();
     $crawler = $client->request('GET', $this->getBaseUrl() . '/job/0');
