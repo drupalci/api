@@ -32,6 +32,12 @@ class V1ControllerTest extends APITestBase {
     $this->assertEquals(401, $client->getResponse()->getStatusCode());
   }
 
-  
+  public function testGetJob404() {
+    $client = $this->createClient();
+    $crawler = $client->request('GET', $this->getBaseUrl() . '/job/0');
+
+    $this->assertEquals(404, $client->getResponse()->getStatusCode());
+  }
+
 
 }
