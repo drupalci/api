@@ -42,6 +42,17 @@ node default {
   apache::listen { '80': }
   include apache::mod::rewrite
   include apache::mod::php
+  if $httpsonly {
+    $rewrite_array = [
+      {
+        comment      => 'Rewrite to HTTPS',
+        rewrite_cond => ['%{HTTP:X-Forwarded-Proto} !https'],
+        rewrite_rule => ['^.*$ https://%{SERVER_NAME}%{REQUEST_URI}'],
+      },
+    ]
+  } else {
+    $rewrite_array = [ ]
+  }
 
   apache::vhost { $fqdn:
     port           => '80',
@@ -49,6 +60,7 @@ node default {
     manage_docroot => false,
     priority       => '25',
     override       => [ 'ALL' ],
+    rewrites       => $rewrite_array,
     setenvif       => [
       'X-Forwarded-Proto https HTTPS=on',
     ],
