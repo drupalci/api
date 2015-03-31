@@ -53,6 +53,13 @@ node default {
       'X-Forwarded-Proto https HTTPS=on',
     ],
   }
+  if $httpsonly {
+    apache::custom_config { 'httpsrewrite':
+      content => '# Rewrite to HTTPS
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^/(.*$) https://%{HTTP_HOST}/$1 [R=permanent,NE]',
+    }
+  }
 
   mysql::db { 'drupal':
     user     => 'drupal',
