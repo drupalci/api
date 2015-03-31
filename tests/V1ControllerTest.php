@@ -8,6 +8,7 @@
 namespace API\Tests;
 
 use Silex\WebTestCase;
+use API\Tests\APITestBase;
 
 /**
  * Base test class for API tests.
@@ -18,7 +19,10 @@ use Silex\WebTestCase;
 class V1ControllerTest extends APITestBase {
 
   public function testJobGet() {
+    $client = $this->createClient();
+    $crawler = $client->request('GET', $this->getBaseUrl() . '/job');
 
+    $this->assertEquals(404, $client->getResponse()->getStatusCode());
   }
 
 }
