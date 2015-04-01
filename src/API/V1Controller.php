@@ -40,23 +40,21 @@ class V1Controller extends BaseController {
     $results = $app['results'];
     $job = $results->createResultForJob($job);
 
-    // Now send these details over to the Jenkins instance so the job can be
-    // processed.
-    $query = array(
-      'repository' => $job->getRepository(),
-      'branch' => $job->getBranch(),
-      'patch' => $job->getPatch(),
-      'results' => $job->getId(),
-    );
+    $id = $job->getId();
+    if (empty($id) || $id == 0) {
+      $app->abort(502, 'Unable to submit to Results server.');
+    }
+
     $jenkins = $app['jenkins'];
+    $url = $jenkins->sendJob($job);
     $jenkins->setQuery($query);
     $url = $jenkins->send();
-    $job->setJenkinsUri($url);
-
     // Check the return to make sure we had a successful submission.
     if (empty($url)) {
-      $app->abort(500, 'Unable to submit to test builder.');
+      error_log('no url');
+      $app->abort(502, 'Unable to submit to test builder.');
     }
+    $job->setJenkinsUri($url);
 
     return $app->json($job);
   }

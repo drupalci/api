@@ -43,6 +43,23 @@ class Jenkins {
   protected $client = NULL;
 
   /**
+   *
+   * @param Job $job
+   */
+  public function sendJob($job) {
+    // Now send these details over to the Jenkins instance so the job can be
+    // processed.
+    $query = array(
+      'repository' => $job->getRepository(),
+      'branch' => $job->getBranch(),
+      'patch' => $job->getPatch(),
+      'results' => $job->getId(),
+    );
+    $this->setQuery($query);
+    return $this->send();
+  }
+
+  /**
    * Helper function to build the URL of the Jenkins host.
    */
   protected function buildUrl() {
@@ -75,12 +92,16 @@ class Jenkins {
     // Post the request to Jenkins.
     $url = $this->buildUrl();
     $client = $this->getClient();
-    $response = $client->get($url, [
-      // @todo, Once we get signed certificates we should remove.
-      'verify' => false,
-      'query' => $this->getQuery(),
-    ]);
-
+    try {
+      $response = $client->get($url, [
+        // @todo, Once we get signed certificates we should remove.
+        'verify' => false,
+        'query' => $this->getQuery(),
+      ]);
+    }
+    catch (\Exception $e) {
+      return NULL;
+    }
     return $response;
   }
 
@@ -89,17 +110,16 @@ class Jenkins {
    */
   public function send() {
     $response = $this->sendRequest();
-
-    // We get the location of the build in the queue so we can track it.
-    // First we make sure it is in the right format.
-    $url = $this->buildUrl();
-
-    $location = $response->getHeader('Location');
-    if (strpos($location, $url)) {
-      return FALSE;
+    if ($response) {
+      $location = $response->getHeader('Location');
+      // We get the location of the build in the queue so we can track it.
+      // First we make sure it is in the right format.
+      if (strpos($location, $this->buildUrl())) {
+        return FALSE;
+      }
+      return $location;
     }
-
-    return $location;
+    return FALSE;
   }
 
   /**
