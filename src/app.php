@@ -16,11 +16,16 @@ use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use API\Jenkins;
 use API\Results;
+use API\Mock\MockJenkins;
+use API\Mock\MockResults;
 
 $app = new Silex\Application();
 
 /**
  * Environment.
+ *
+ * If we can pull the config from our known location, do so. Otherwise grab the
+ * test config.
  */
 if (file_exists('/etc/drupalci-results.yaml')) {
     $config = '/etc/drupalci-results.yaml';
@@ -84,10 +89,16 @@ foreach ($app['config']['users'] as $username => $password) {
 }
 
 // Set up JSON as a middleware.
-$app->before(function (Request $request) {
+$app->before(function (Request $request, Application $app) {
   if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
     $data = json_decode($request->getContent(), true);
     $request->request->replace(is_array($data) ? $data : array());
+  }
+  // Swap out Jenkins and Results services if we're in mock mode.
+  if ($request->get('mock', FALSE)) {
+    error_log('mock!');
+  //  $app['jenkins'] = $app->share(function() {return new MockJenkins();});
+  //  $app['results'] = $app->share(function() {return new MockResults();});
   }
 });
 
