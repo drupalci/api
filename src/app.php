@@ -17,8 +17,8 @@ $app = new Silex\Application();
 /**
  * Environment.
  */
-if (file_exists('/etc/drupalci-results.yaml')) {
-    $config = '/etc/drupalci-results.yaml';
+if (file_exists('/etc/drupalci/config.yaml')) {
+    $config = '/etc/drupalci/config.yaml';
 }
 else {
     $config = __DIR__ . '/../config/config-test.yaml';
