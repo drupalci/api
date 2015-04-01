@@ -24,7 +24,7 @@
       "source_ami":    "{{user `source_ami`}}",
       "instance_type": "m3.medium",
       "ssh_username":  "ubuntu",
-      "ami_name":      "DrupalCI Results {{timestamp}}"
+      "ami_name":      "DrupalCI API {{timestamp}}"
     }
   ]
 }
