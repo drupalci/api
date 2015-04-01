@@ -15,11 +15,6 @@ class Jenkins {
   /**
    * @var string
    */
-  protected $protocol = 'http';
-
-  /**
-   * @var string
-   */
   protected $host = '';
 
   /**
@@ -51,14 +46,19 @@ class Jenkins {
    * Helper function to build the URL of the Jenkins host.
    */
   protected function buildUrl() {
-    $protocol = $this->getProtocol();
     $host = $this->getHost();
     $port = $this->getPort();
     $build = $this->getBuild();
-    if (empty($protocol) || empty($host) || empty($port) || empty($build)) {
-      throw new \InvalidArgumentException('Jenkins needs protocol, host, build, and port.');
+    if (empty($host) || empty($port) || empty($build)) {
+      throw new \InvalidArgumentException('Jenkins needs host, build, and port.');
     }
-    return $protocol . '://' . $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
+
+    // Guzzle doesn't like "example.com:80" as part of the url.
+    if ($port == "80") {
+      return $host . '/job/' . $build . '/buildWithParameters';
+    }
+
+    return $host . ':' . $port . '/job/' . $build . '/buildWithParameters';
   }
 
   /**
@@ -93,7 +93,8 @@ class Jenkins {
     // We get the location of the build in the queue so we can track it.
     // First we make sure it is in the right format.
     $url = $this->buildUrl();
-    $location = $response[0];
+
+    $location = $response->getHeader('Location');
     if (strpos($location, $url)) {
       return FALSE;
     }
@@ -137,21 +138,6 @@ class Jenkins {
    */
   public function getHost() {
     return $this->host;
-  }
-
-  /**
-   * @param string
-   */
-  public function setProtocol($protocol) {
-    $this->protocol = $protocol;
-    return $this;
-  }
-
-  /**
-   * @return string
-   */
-  public function getProtocol() {
-    return $this->protocol;
   }
 
   /**

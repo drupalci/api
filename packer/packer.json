@@ -1,0 +1,30 @@
+{
+  "variables": {
+    "source_ami": "ami-95d7b4af"
+  },
+  "provisioners": [
+    {
+      "type":        "file",
+      "source":      ".",
+      "destination": "/tmp/api"
+    },{
+      "type":            "shell",
+      "execute_command": "echo 'ubuntu' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "packer/scripts/base.sh",
+        "packer/scripts/puppet.sh",
+	"packer/scripts/install.sh"
+      ]
+    }
+  ],
+  "builders": [
+    {
+      "type":          "amazon-ebs",
+      "region":        "ap-southeast-2",
+      "source_ami":    "{{user `source_ami`}}",
+      "instance_type": "m3.medium",
+      "ssh_username":  "ubuntu",
+      "ami_name":      "DrupalCI Results {{timestamp}}"
+    }
+  ]
+}

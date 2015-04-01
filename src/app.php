@@ -22,8 +22,8 @@ $app = new Silex\Application();
 /**
  * Environment.
  */
-if (file_exists('/etc/drupalci-results.yaml')) {
-    $config = '/etc/drupalci-results.yaml';
+if (file_exists('/etc/drupalci/config.yaml')) {
+    $config = '/etc/drupalci/config.yaml';
 }
 else {
     $config = __DIR__ . '/../config/config-test.yaml';
@@ -39,11 +39,22 @@ $app->register(new YamlConfigServiceProvider($config));
  */
 $app['jenkins'] = $app->share(
   function ($app) {
+    $conf = array();
+    foreach (['host', 'port', 'job', 'token'] as $conf_key) {
+      $conf[$conf_key] = !empty($app['config']['jenkins'][$conf_key]) ? $app['config']['jenkins'][$conf_key] : "";
+    }
+
+    // Sanity check.
+    if (empty($conf['host']) || empty($conf['port']) || empty($conf['job'])) {
+      // @todo: Make a meaningful exception class.
+      throw new \InvalidArgumentException('Job start requests need at least a job title, repository and a branch.');
+    }
+
     $jenkins = new Jenkins();
-    $jenkins->setHost($app['config']['jenkins']['host']);
-    $jenkins->setPort($app['config']['jenkins']['port']);
-    $jenkins->setToken($app['config']['jenkins']['token']);
-    $jenkins->setBuild($app['config']['jenkins']['job']);
+    $jenkins->setHost($conf['host']);
+    $jenkins->setPort($conf['port']);
+    $jenkins->setToken($conf['token']);
+    $jenkins->setBuild($conf['job']);
     return $jenkins;
   }
 );
