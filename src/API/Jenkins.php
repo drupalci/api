@@ -45,6 +45,8 @@ class Jenkins {
   /**
    *
    * @param Job $job
+   * @return string|FALSE
+   *   String is the Jenkins job URL or FALSE if Jenkins didn't return an URL.
    */
   public function sendJob($job) {
     // Now send these details over to the Jenkins instance so the job can be
