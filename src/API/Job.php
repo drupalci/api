@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Job implements \JsonSerializable {
 
   protected $id;
+  protected $title;
   protected $type;
   protected $issue;
   protected $created;
@@ -28,15 +29,16 @@ class Job implements \JsonSerializable {
 
   public static function createFromRequest(Request $request) {
     $query = [];
-    foreach (['repository', 'branch', 'patch'] as $query_key) {
+    foreach (['title', 'repository', 'branch', 'patch'] as $query_key) {
       $query[$query_key] = $request->get($query_key, '');
     }
     // Sanity check.
-    if (empty($query['repository']) || empty($query['branch'])) {
+    if (empty($query['title']) || empty($query['repository']) || empty($query['branch'])) {
       // @todo: Make a meaningful exception class.
-      throw new \InvalidArgumentException('Job start requests need at least a repository and a branch.');
+      throw new \InvalidArgumentException('Job start requests need at least a job title, repository and a branch.');
     }
     $job = new static();
+    $job->setTitle($query['title']);
     $job->setBranch($query['branch']);
     $job->setPatch($query['patch']);
     $job->setRepository($query['repository']);
@@ -44,6 +46,17 @@ class Job implements \JsonSerializable {
   }
 
   /**
+   * Set the created date.
+   */
+  public function setCreated($created) {
+    $this->created = $created;
+
+    return $this;
+  }
+
+  /**
+   * Get created date.
+   *
    * @return \DateTime
    */
   public function getCreated() {
@@ -51,7 +64,16 @@ class Job implements \JsonSerializable {
   }
 
   /**
-   * Get id
+   * Set id.
+   */
+  public function setId($id) {
+    $this->id = $id;
+
+    return $this;
+  }
+
+  /**
+   * Get id.
    *
    * @return integer
    */
@@ -60,7 +82,27 @@ class Job implements \JsonSerializable {
   }
 
   /**
-   * Set repository
+   * Set title.
+   *
+   * @return string
+   */
+  public function setTitle($title) {
+    $this->title = $title;
+
+    return $this;
+  }
+
+  /**
+   * Get title.
+   *
+   * @return string
+   */
+  public function getTitle() {
+    return $this->title;
+  }
+
+  /**
+   * Set repository.
    *
    * @param string $repository
    * @return Job
@@ -72,7 +114,7 @@ class Job implements \JsonSerializable {
   }
 
   /**
-   * Get repository
+   * Get repository.
    *
    * @return string
    */
@@ -81,7 +123,7 @@ class Job implements \JsonSerializable {
   }
 
   /**
-   * Set branch
+   * Set branch.
    *
    * @param string $branch
    * @return Job
@@ -93,7 +135,7 @@ class Job implements \JsonSerializable {
   }
 
   /**
-   * Get branch
+   * Get branch.
    *
    * @return string
    */
@@ -189,6 +231,7 @@ class Job implements \JsonSerializable {
     $result = new \stdClass();
     $properties = [
       'id',
+      'title',
       'issue',
       'type',
       'repository',
