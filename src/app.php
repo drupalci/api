@@ -7,10 +7,15 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+use API\Jenkins;
+use API\Results;
 
 $app = new Silex\Application();
 
@@ -30,11 +35,40 @@ else {
 $app->register(new YamlConfigServiceProvider($config));
 
 /**
+ * Jenkins is a service.
+ */
+$app['jenkins'] = $app->share(
+  function ($app) {
+    $jenkins = new Jenkins();
+    $jenkins->setHost($app['config']['jenkins']['host']);
+    $jenkins->setPort($app['config']['jenkins']['port']);
+    $jenkins->setToken($app['config']['jenkins']['token']);
+    $jenkins->setBuild($app['config']['jenkins']['job']);
+    return $jenkins;
+  }
+);
+
+/**
+ * Results is a service.
+ */
+$app['results'] = $app->share(
+  function ($app) {
+    $results = new Results();
+    $results->setUrl($app['config']['results']['host']);
+    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    return $results;
+  }
+);
+
+/**
  * Handling.
  */
 $app->error(function (\Exception $e, $code) {
-    error_log($e);
-    return "Something went wrong. Please contact the DrupalCI team.";
+  if ($e instanceof HttpException) {
+    return new Response($e->getMessage(), $e->getStatusCode());
+  }
+  error_log($e);
+  return "Something went wrong. Please contact the DrupalCI team.";
 });
 
 /**
@@ -68,7 +102,7 @@ $app->after(function (Request $request, Response $response) {
 });
 
 // Security definition.
-$app->register(new SecurityServiceProvider());
+/**$app->register(new SecurityServiceProvider());
 $app['security.firewalls'] = array(
     // Login URL is open to everybody.
     'default' => array(
@@ -80,7 +114,7 @@ $app['security.firewalls'] = array(
 );
 $app['security.access_rules'] = array(
     array('^.*$', 'ROLE_USER'),
-);
+);*/
 
 /**
  * Routing.

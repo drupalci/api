@@ -32,29 +32,23 @@ class V1Controller extends BaseController {
     try {
       $job = Job::createFromRequest($request);
     } catch (\InvalidArgumentException $e) {
-      $app->abort(400, 'Job needs repository and branch.');
+      $app->abort(400, $e->getMessage());
     }
 
     // Create a results site "stub" so the Jenkins slaves and send results
     // to it.
-    $results = new Results();
-    $results->setUrl($app['config']['results']['host']);
-    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    $results = $app['results'];
     $job = $results->createResultForJob($job);
 
     // Now send these details over to the Jenkins instance so the job can be
     // processed.
     $query = array(
-      'repository' => $repository,
-      'branch' => $branch,
-      'patch' => $patch,
-      'results' => $nid,
+      'repository' => $job->getRepository(),
+      'branch' => $job->getBranch(),
+      'patch' => $job->getPatch(),
+      'results' => $job->getId(),
     );
-    $jenkins = new Jenkins();
-    $jenkins->setHost($app['config']['jenkins']['host']);
-    $jenkins->setPort($app['config']['jenkins']['port']);
-    $jenkins->setToken($app['config']['jenkins']['token']);
-    $jenkins->setBuild($app['config']['jenkins']['job']);
+    $jenkins = $app['jenkins'];
     $jenkins->setQuery($query);
     $url = $jenkins->send();
 
@@ -63,18 +57,16 @@ class V1Controller extends BaseController {
       $app->abort(500, 'Unable to submit to test builder.');
     }
 
-    return new Response($nid);
+    return new Response($url);
   }
 
   public function jobStatus(Application $app, $id) {
-    $results = new Results();
-    $results->setUrl($app['config']['results']['host']);
-    $results->setAuth($app['config']['results']['username'], $app['config']['results']['password']);
+    $results = $app['results'];
 
-    $job =  $results->getJob($id);
+    // @todo: Replace this with try block.
+    $job = $results->getStatus($id);
     if (!$job) {
       $app->abort(404, 'Unable to find job.');
-      return;
     }
     $app->json($job, 200);
   }

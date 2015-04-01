@@ -6,4 +6,4 @@ home:
 
 api_1:
   prefix: /drupalci/api/1
-  resource: routes/1.yml
+  resource: routes/v1.yml
