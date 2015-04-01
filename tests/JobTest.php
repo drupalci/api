@@ -21,6 +21,7 @@ class JobTest extends \PHPUnit_Framework_TestCase {
     $request = new Request(
       [
         'repository' => 'repository_test',
+        'title' => 'title_test',
         'branch' => 'branch_test',
         'patch' => 'patch_test',
       ]
@@ -30,6 +31,7 @@ class JobTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals('repository_test', $job->getRepository());
     $this->assertEquals('branch_test', $job->getBranch());
     $this->assertEquals('patch_test', $job->getPatch());
+    $this->assertEquals('title_test', $job->getTitle());
   }
 
   /**
@@ -56,6 +58,7 @@ class JobTest extends \PHPUnit_Framework_TestCase {
   public function testJsonSerialize() {
     $request = new Request(
       [
+        'title' => 'title_test',
         'repository' => 'repository_test',
         'branch' => 'branch_test',
         'patch' => 'patch_test',
@@ -63,7 +66,7 @@ class JobTest extends \PHPUnit_Framework_TestCase {
     );
     $job = Job::createFromRequest($request);
     $this->assertEquals(
-      '{"id":null,"issue":null,"type":null,"repository":"repository_test","branch":"branch_test","patch":"patch_test","status":null,"result":null,"jenkinsUri":null}',
+      '{"id":null,"title":"title_test","issue":null,"type":null,"repository":"repository_test","branch":"branch_test","patch":"patch_test","status":null,"result":null,"jenkinsUri":null}',
       json_encode($job->jsonSerialize())
     );
   }

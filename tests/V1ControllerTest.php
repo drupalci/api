@@ -41,8 +41,7 @@ class V1ControllerTest extends APITestBase {
       [],
       [],
       array('CONTENT_TYPE' => 'application/json'),
-      '{"branch":"r","repository":"b", "patch":"p", "mock": true}'
-     // '{"repository":"r","branch":"b", "patch":"p", "mock": true}'
+      '{"branch":"r","repository":"b", "patch":"p", "title":"some title"}'
     );
     $response = $client->getResponse();
 
