@@ -87,18 +87,6 @@ $app->error(function (\Exception $e, $code) {
   return "Something went wrong. Please contact the DrupalCI team.";
 });
 
-/**
- * Build out our users and give them appropriate roles.
- */
-$encoder = new MessageDigestPasswordEncoder();
-$users = array();
-foreach ($app['config']['users'] as $username => $password) {
-    $users[$username] = array(
-        'ROLE_USER',
-        $encoder->encodePassword($password, ''),
-    );
-}
-
 // Set up JSON as a middleware.
 $app->before(function (Request $request, Application $app) {
   if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
@@ -124,7 +112,15 @@ $app->after(function (Request $request, Response $response) {
 });
 
 // Security definition.
-/**$app->register(new SecurityServiceProvider());
+$encoder = new MessageDigestPasswordEncoder();
+$users = array();
+foreach ($app['config']['users'] as $username => $password) {
+  $users[$username] = array(
+    'ROLE_USER',
+    $encoder->encodePassword($password, ''),
+  );
+}
+$app->register(new SecurityServiceProvider());
 $app['security.firewalls'] = array(
     // Login URL is open to everybody.
     'default' => array(
@@ -136,7 +132,7 @@ $app['security.firewalls'] = array(
 );
 $app['security.access_rules'] = array(
     array('^.*$', 'ROLE_USER'),
-);*/
+);
 
 /**
  * Routing.

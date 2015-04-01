@@ -92,11 +92,12 @@ class Jenkins {
     // Post the request to Jenkins.
     $url = $this->buildUrl();
     $client = $this->getClient();
+
     try {
       $response = $client->get($url, [
         // @todo, Once we get signed certificates we should remove.
         'verify' => false,
-        'query' => $this->getQuery(),
+        'query' => $query,
       ]);
     }
     catch (\Exception $e) {

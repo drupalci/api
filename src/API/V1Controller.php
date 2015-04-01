@@ -47,11 +47,9 @@ class V1Controller extends BaseController {
 
     $jenkins = $app['jenkins'];
     $url = $jenkins->sendJob($job);
-    $jenkins->setQuery($query);
-    $url = $jenkins->send();
+
     // Check the return to make sure we had a successful submission.
     if (empty($url)) {
-      error_log('no url');
       $app->abort(502, 'Unable to submit to test builder.');
     }
     $job->setJenkinsUri($url);
