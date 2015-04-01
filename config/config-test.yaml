@@ -9,6 +9,9 @@ results:
   username: 'admin'
   password: 'changeme'
 
+monolog:
+  logfile: develop.log
+
 salt: 'my-salt'
 
 users:

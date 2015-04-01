@@ -14,6 +14,7 @@ use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+use Monolog\Logger;
 use API\Jenkins;
 use API\Results;
 use API\Mock\MockJenkins;
@@ -38,6 +39,15 @@ else {
  * Services.
  */
 $app->register(new YamlConfigServiceProvider($config));
+
+isset($app['config']['monolog']['logfile']) ?
+  $log_path = $app['config']['monolog']['logfile'] :
+  $log_path = __DIR__.'/development.log';
+$app->register(new MonologServiceProvider(), array(
+    'monolog.logfile' => $log_path,
+));
+$app['monolog.name'] = 'drupalci_api';
+$app['monolog.level'] = Logger::WARNING;
 
 /**
  * Jenkins is a service.
@@ -79,11 +89,10 @@ $app['results'] = $app->share(
 /**
  * Handling.
  */
-$app->error(function (\Exception $e, $code) {
+$app->error(function (\Exception $e, $code) use ($app) {
   if ($e instanceof HttpException) {
     return new Response($e->getMessage(), $e->getStatusCode());
   }
-  error_log($e);
   return "Something went wrong. Please contact the DrupalCI team.";
 });
 

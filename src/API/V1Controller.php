@@ -25,18 +25,18 @@ class V1Controller extends BaseController {
    * @return id.
    */
   public function jobRun(Application $app) {
-    // Get our params.
-    // @todo, Find a better way to do this.
+    // Get the request for convenience.
     $request = $app['request'];
 
+    // Try to make a job object from the request. If there is a problem with
+    // the POSTed data, Job will throw \InvalidArgumentException.
     try {
       $job = Job::createFromRequest($request);
     } catch (\InvalidArgumentException $e) {
       $app->abort(400, $e->getMessage());
     }
 
-    // Create a results site "stub" so the Jenkins slaves can send results
-    // post results to it.
+    // We have to create a record on the Results site so we have a job ID.
     $results = $app['results'];
     $job = $results->createResultForJob($job);
 
@@ -45,6 +45,7 @@ class V1Controller extends BaseController {
       $app->abort(502, 'Unable to submit to Results server.');
     }
 
+    // Start the job under Jenkins.
     $jenkins = $app['jenkins'];
     $url = $jenkins->sendJob($job);
 
@@ -54,10 +55,12 @@ class V1Controller extends BaseController {
     }
     $job->setJenkinsUri($url);
 
+    // Return the job object we made.
     return $app->json($job);
   }
 
   public function jobStatus(Application $app, $id) {
+    // Get the results service.
     $results = $app['results'];
 
     // @todo: Replace this with try block.
