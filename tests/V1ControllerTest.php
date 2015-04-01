@@ -33,8 +33,9 @@ class V1ControllerTest extends APITestBase {
     $this->assertEquals(400, $client->getResponse()->getStatusCode());
   }
 
-  public function testJobPost() {
+  public function testJobPostMock() {
     // Build.
+    $this->app['env'] = 'mock';
     $client = $this->createClient();
     $crawler = $client->request(
       'POST', $this->getBaseUrl() . '/job',
@@ -46,6 +47,23 @@ class V1ControllerTest extends APITestBase {
     $response = $client->getResponse();
 
     $this->assertEquals(200, $client->getResponse()->getStatusCode());
+  }
+
+
+  public function testJobPostNoBackend() {
+    // Build.
+    $this->app['env'] = 'prod';
+    $client = $this->createClient();
+    $crawler = $client->request(
+      'POST', $this->getBaseUrl() . '/job',
+      [],
+      [],
+      array('CONTENT_TYPE' => 'application/json'),
+      '{"branch":"r","repository":"b", "patch":"p", "title":"some title"}'
+    );
+    $response = $client->getResponse();
+
+    $this->assertEquals(502, $client->getResponse()->getStatusCode());
   }
 
   public function testGetJob404() {
