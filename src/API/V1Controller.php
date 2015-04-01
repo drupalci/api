@@ -35,8 +35,8 @@ class V1Controller extends BaseController {
       $app->abort(400, $e->getMessage());
     }
 
-    // Create a results site "stub" so the Jenkins slaves and send results
-    // to it.
+    // Create a results site "stub" so the Jenkins slaves can send results
+    // post results to it.
     $results = $app['results'];
     $job = $results->createResultForJob($job);
 
@@ -51,13 +51,14 @@ class V1Controller extends BaseController {
     $jenkins = $app['jenkins'];
     $jenkins->setQuery($query);
     $url = $jenkins->send();
+    $job->setJenkinsUri($url);
 
     // Check the return to make sure we had a successful submission.
     if (empty($url)) {
       $app->abort(500, 'Unable to submit to test builder.');
     }
 
-    return new Response($url);
+    return $app->json($job);
   }
 
   public function jobStatus(Application $app, $id) {

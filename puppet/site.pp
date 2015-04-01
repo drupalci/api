@@ -3,10 +3,6 @@
 node default {
 
   include apt
-  include mysql::server
-  include mysql::server::mysqltuner
-  include mysql::client
-  include mysql::bindings
 
   ##
   # PHP.
@@ -18,7 +14,6 @@ node default {
   package { 'php5-mcrypt':         ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
   package { 'php5-curl':           ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
   package { 'php5-xdebug':         ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
-  package { 'php5-mysql':          ensure => 'installed', require => Apt::Ppa['ppa:ondrej/php5-oldstable'] }
 
   include pear
   pear::package { 'phing':
@@ -71,12 +66,6 @@ node default {
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^/(.*$) https://%{HTTP_HOST}/$1 [R=permanent,NE]',
     }
-  }
-
-  mysql::db { 'drupal':
-    user     => 'drupal',
-    password => 'drupal',
-    host     => 'localhost',
   }
 
   ##
