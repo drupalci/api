@@ -46,15 +46,19 @@ class Results {
    * @param \API\Job $job
    */
   public function createResultForJob(Job $job) {
-    $nid = $this->api->create($job->getTitle());
-    $job->setId($nid);
+    try {
+      $nid = $this->api->create($job->getTitle());
+      $job->setId($nid);
 
-    // This is always going to be marked as a new object.
-    $job->setStatus("new");
+      // This is always going to be marked as a new object.
+      $job->setStatus("new");
 
-    // This is the results report used for developers to see the build results.
-    $url = $this->api->getUrl();
-    $job->setResult($url . '/node/' . $nid);
+      // This is the results report used for developers to see the build results.
+      $url = $this->api->getUrl();
+      $job->setResult($url . '/node/' . $nid);
+    } catch (\Exception $e) {
+      // @todo: make this give useful information.
+    }
 
     return $job;
   }

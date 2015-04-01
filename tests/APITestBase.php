@@ -13,7 +13,7 @@ class APITestBase extends WebTestCase {
   public function createApplication() {
     $app = include __DIR__ . '/../src/app.php';
 
-    $mock_guzzle = $this->getMockBuilder('\GuzzleHttp\Client')
+/**    $mock_guzzle = $this->getMockBuilder('\GuzzleHttp\Client')
       ->setMethods(['get'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -27,7 +27,7 @@ class APITestBase extends WebTestCase {
 
     $jenkins = $app['jenkins'];
     $jenkins->setClient($mock_guzzle);
-
+*/
     return $app;
   }
 

@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Job implements \JsonSerializable {
 
-  protected $id;
+  protected $id = 0;
   protected $title;
   protected $type;
   protected $issue;
