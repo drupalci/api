@@ -97,21 +97,11 @@ $app->before(function (Request $request, Application $app) {
 
 // Set up the environment based on the request.
 $app->before(function (Request $request, Application $app) {
-  error_log('superduperbefore: ' . $app['env']);
-  if (!empty($app['env'])) {
-    $env = $request->get('env', 'prod');
-    $app['env'] = $env;
-  }
-/*  if ($env != 'prod') {
-    $config_file = __DIR__ . '/../config/config-' . $env . '.yaml';
-    if (file_exists($config_file)) {
-      $config = new YamlConfigServiceProvider($config_file);
-      $config->register($app);
-    }
-  }*/
+  $env = $request->get('env', '');
+  $app['env'] = $env;
   if ($env == 'mock') {
-    error_log('mocking???');
     $app['jenkins'] = $app->share(function() {return new MockJenkins();});
+    $app['results'] = $app->share(function() {return new MockResults();});
   }
 });
 

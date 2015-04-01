@@ -19,41 +19,33 @@ use API\Tests\APITestBase;
 class V1ControllerTest extends APITestBase {
 
   public function testHomeGet() {
-    $client = $this->createClient();
+    $client = $this->createClient(array(
+      'PHP_AUTH_USER' => 'user1',
+      'PHP_AUTH_PW'   => 'password1',
+    ));
     $crawler = $client->request('GET', '/');
 
     $this->assertEquals(200, $client->getResponse()->getStatusCode());
   }
 
   public function testJobPostNoContent() {
-    $client = $this->createClient();
+    $client = $this->createClient(array(
+      'PHP_AUTH_USER' => 'user1',
+      'PHP_AUTH_PW'   => 'password1',
+    ));
     $path = $this->getBaseUrl() . '/job';
     $crawler = $client->request('POST', $this->getBaseUrl() . '/job');
 
     $this->assertEquals(400, $client->getResponse()->getStatusCode());
   }
 
-  public function testJobPostMock() {
-    // Build.
-    $this->app['env'] = 'mock';
-    $client = $this->createClient();
-    $crawler = $client->request(
-      'POST', $this->getBaseUrl() . '/job',
-      [],
-      [],
-      array('CONTENT_TYPE' => 'application/json'),
-      '{"branch":"r","repository":"b", "patch":"p", "title":"some title"}'
-    );
-    $response = $client->getResponse();
-
-    $this->assertEquals(200, $client->getResponse()->getStatusCode());
-  }
-
-
   public function testJobPostNoBackend() {
     // Build.
     $this->app['env'] = 'prod';
-    $client = $this->createClient();
+    $client = $this->createClient(array(
+      'PHP_AUTH_USER' => 'user1',
+      'PHP_AUTH_PW'   => 'password1',
+    ));
     $crawler = $client->request(
       'POST', $this->getBaseUrl() . '/job',
       [],
@@ -67,7 +59,10 @@ class V1ControllerTest extends APITestBase {
   }
 
   public function testGetJob404() {
-    $client = $this->createClient();
+    $client = $this->createClient(array(
+      'PHP_AUTH_USER' => 'user1',
+      'PHP_AUTH_PW'   => 'password1',
+    ));
     $crawler = $client->request('GET', $this->getBaseUrl() . '/job/0');
 
     $this->assertEquals(404, $client->getResponse()->getStatusCode());
