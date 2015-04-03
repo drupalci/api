@@ -1,6 +1,8 @@
 DrupalCI-API
 ============
 
+[![Build Status](https://travis-ci.org/drupalci/api.svg)](https://travis-ci.org/drupalci/api)
+
 ## Overview
 
 Provides a front facing API for the DrupalCI project. This allows us to change
@@ -58,40 +60,42 @@ Restarts the job. Implies cancel. Creates new id.
 
 ```json
 {
-	"title": "This is a test build",
-	"repository": "git://git.drupal.org/project/drupal.git",
-	"branch": "8.0.x",
-	"commit": "12353245",
-	"issue": "https://www.drupal.org/node/2304461",
-	"patch": "https://www.drupal.org/files/issues/2304461-86.patch",
-	"tags": [
-		"Drupal 8",
-		"8.0.x",
-	],
-	"tests": [
-		{
-			"type": "simpletest",
-			"php": [
-				"5.4",
-				"5.5",
-				"5.6",
-				"master"
-			],
-			"db": [
-				"mysql",
-				"postgres",
-				"mongodb"
-			]
-		},{
-			"type": "phpunit",
-			"php": [
-				"5.4"
-			]
-		},{
-			"type": "codesniffer",
-			"php": "5.4"
-		}
-	]
+    "title": "This is a test build",
+    "repository": "git://git.drupal.org/project/drupal.git",
+    "branch": "8.0.x",
+    "commit": "12353245",
+    "issue": "https://www.drupal.org/node/2304461",
+    "patch": "https://www.drupal.org/files/issues/2304461-86.patch",
+    "tags": [
+        "Drupal 8",
+        "8.0.x"
+    ],
+    "tests": [
+        {
+            "type": "simpletest",
+            "php": [
+                "5.4",
+                "5.5",
+                "5.6",
+                "master"
+            ],
+            "db": [
+                "mysql",
+                "postgres",
+                "mongodb"
+            ]
+        },
+        {
+            "type": "phpunit",
+            "php": [
+                "5.4"
+            ]
+        },
+        {
+            "type": "codesniffer",
+            "php": "5.4"
+        }
+    ]
 }
 ```
 
@@ -156,7 +160,7 @@ Restarts the job. Implies cancel. Creates new id.
 			"db": "postgres",
 			"results": "https://results.drupalci.org/node/8",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/8"
-		}{
+		},{
 			"id": "9",
 			"type": "simpletest",
 			"php": "php5.4",
@@ -197,7 +201,7 @@ Restarts the job. Implies cancel. Creates new id.
 			"results": "https://results.drupalci.org/node/14",
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/14"
 		}
-	],
+	]
 }
 ```
 
@@ -217,7 +221,7 @@ Restarts the job. Implies cancel. Creates new id.
 	"patch": "https://www.drupal.org/files/issues/2304461-86.patch",
 		"tags": [
 		"Drupal 8",
-		"8.0.x",
+		"8.0.x"
 	],
 	"application": "php5.4",
 	"services": "mysql"
