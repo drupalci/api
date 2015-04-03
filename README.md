@@ -7,6 +7,7 @@ DrupalCI-API
 
 Provides a front facing API for the DrupalCI project. This allows us to change
 the specific CI implementations as needed, without changing the API.
+Drupal.org sends a request for a single build, which is then triggered. d.o is responsible for determining the build matrix based on PHP versions, database types, etc.
 
 ## API
 
@@ -56,11 +57,15 @@ Restarts the job. Implies cancel. Creates new id.
 
 #### Structure
 
-##### Input
+##### Single build
 
 ```json
 {
-    "title": "This is a test build",
+    "id": "1",
+    "title": "drupal 8.0.x-dev",
+    "jobtype": "simpletest",
+    "status": "failed",
+    "result": "100 Passed, 1000000 Failed",
     "repository": "git://git.drupal.org/project/drupal.git",
     "branch": "8.0.x",
     "commit": "12353245",
@@ -70,36 +75,14 @@ Restarts the job. Implies cancel. Creates new id.
         "Drupal 8",
         "8.0.x"
     ],
-    "tests": [
-        {
-            "type": "simpletest",
-            "php": [
-                "5.4",
-                "5.5",
-                "5.6",
-                "master"
-            ],
-            "db": [
-                "mysql",
-                "postgres",
-                "mongodb"
-            ]
-        },
-        {
-            "type": "phpunit",
-            "php": [
-                "5.4"
-            ]
-        },
-        {
-            "type": "codesniffer",
-            "php": "5.4"
-        }
-    ]
+    "environment": {
+        "php": "php5.4",
+        "db": "mysql"
+    }
 }
 ```
 
-##### Return
+##### Return (maybe...)
 
 ```json
 {
@@ -202,29 +185,6 @@ Restarts the job. Implies cancel. Creates new id.
 			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/14"
 		}
 	]
-}
-```
-
-##### Single build
-
-```json
-{
-	"id": "1",
-	"title": "This is a test build",
-	"type": "simpletest",
-	"status": "failed",
-	"result": "100 Passed, 1000000 Failed",
-	"repository": "git://git.drupal.org/project/drupal.git",
-	"branch": "8.0.x",
-	"commit": "12353245",
-	"issue": "https://www.drupal.org/node/2304461",
-	"patch": "https://www.drupal.org/files/issues/2304461-86.patch",
-		"tags": [
-		"Drupal 8",
-		"8.0.x"
-	],
-	"application": "php5.4",
-	"services": "mysql"
 }
 ```
 
