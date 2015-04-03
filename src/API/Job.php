@@ -48,7 +48,20 @@ class Job implements \JsonSerializable {
   }
 
   public static function jsonProperties() {
-    return ['id', 'title', 'jobType', 'status', 'result', 'repository', 'branch', 'commit', 'issue', 'patch', 'tags', 'environment'];
+    return [
+      'id',
+      'title',
+      'jobType',
+      'status',
+      'result',
+      'repository',
+      'branch',
+      'commit',
+      'issue',
+      'patch',
+      'tags',
+      'environment',
+    ];
   }
 
   public static function createFromRequest(Request $request) {
@@ -62,10 +75,18 @@ class Job implements \JsonSerializable {
       throw new \InvalidArgumentException('Job start requests need at least a job title, repository and a branch.');
     }
     $job = new static();
+    $job->setId($query['id']);
     $job->setTitle($query['title']);
-    $job->setBranch($query['branch']);
-    $job->setPatch($query['patch']);
+    $job->setJobType($query['jobType']);
+    $job->setStatus($query['status']);
+    $job->setResult($query['result']);
     $job->setRepository($query['repository']);
+    $job->setBranch($query['branch']);
+    $job->setCommit($query['commit']);
+    $job->setIssue($query['issue']);
+    $job->setPatch($query['patch']);
+    $job->setTags((array)$query['tags']);
+    $job->setEnvironment((array)$query['environment']);
     return $job;
   }
 
