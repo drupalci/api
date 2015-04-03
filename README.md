@@ -7,7 +7,8 @@ DrupalCI-API
 
 Provides a front facing API for the DrupalCI project. This allows us to change
 the specific CI implementations as needed, without changing the API.
-Drupal.org sends a request for a single build, which is then triggered. d.o is responsible for determining the build matrix based on PHP versions, database types, etc.
+
+Drupal.org sends a request for a single build, which is then triggered. Drupal.org (or other system) is responsible for determining the build matrix based on PHP versions, database types, etc.
 
 ## API
 
@@ -18,18 +19,7 @@ A Job is a CI task sent off to Jenkins or similar test runner. Drupal.org or
 other process requests that jobs be started, and then the test runner (Jenkins)
 runs the CI process.
 
-The Job has the following properties:
-
-- id: Assigned when the Job is created by the API implementation.
-- created: Timestamp of creation.
-- title: Title of the test run, comes from d.o.
-- type: The test type to run. e.g. 'simpletest', 'phpunit'...
-- repository: Repository to test against.
-- branch: Branch of the repository to check out.
-- patch: File name of patch to apply to the branch of the repository.
-- status: String indicating build phase.
-- result: Pass/fail.
-- log: Console output of the build thus far.
+See the JSON below for the structure of the Job object.
 
 `POST [/job]`
 
@@ -57,7 +47,7 @@ Restarts the job. Implies cancel. Creates new id.
 
 #### Structure
 
-##### Single build
+##### Job
 
 ```json
 {
@@ -82,111 +72,17 @@ Restarts the job. Implies cancel. Creates new id.
 }
 ```
 
-##### Return (maybe...)
+- `id`: Created by Results when the job is first created.
+- `title`: Title of the test run, comes from d.o.
+- `jobtype`: The test type to run. e.g. 'simpletest', 'phpunit'...
+- `repository`: Repository to test against.
+- `branch`: Branch of the repository to check out.
+- `commit`: Hash of specific commit to check against.
+- `patch`: File name of patch to apply to the branch of the repository.
+- `status`: String indicating build phase.
+- `result`: Pass/fail.
+- `environment`: Specific PHP versions and database types to test against.
 
-```json
-{
-	"builds": [
-		{
-			"id": "1",
-			"type": "simpletest",
-			"php": "5.4",
-			"db": "mysql",
-			"results": "https://results.drupalci.org/node/1",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/1"
-		},{
-			"id": "2",
-			"type": "simpletest",
-			"php": "php5.5",
-			"db": "mysql",
-			"results": "https://results.drupalci.org/node/2",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/2"
-		},{
-			"id": "3",
-			"type": "simpletest",
-			"php": "php5.6",
-			"db": "mysql",
-			"results": "https://results.drupalci.org/node/3",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/3"
-		},{
-			"id": "4",
-			"type": "simpletest",
-			"php": "master",
-			"db": "mysql",
-			"results": "https://results.drupalci.org/node/4",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/4"
-		},{
-			"id": "5",
-			"type": "simpletest",
-			"php": "php5.4",
-			"db": "postgres",
-			"results": "https://results.drupalci.org/node/5",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/5"
-		},{
-			"id": "6",
-			"type": "simpletest",
-			"php": "php5.5",
-			"db": "postgres",
-			"results": "https://results.drupalci.org/node/6",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/6"
-		},{
-			"id": "7",
-			"type": "simpletest",
-			"php": "php5.6",
-			"db": "postgres",
-			"results": "https://results.drupalci.org/node/7",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/7"
-		},{
-			"id": "8",
-			"type": "simpletest",
-			"php": "master",
-			"db": "postgres",
-			"results": "https://results.drupalci.org/node/8",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/8"
-		},{
-			"id": "9",
-			"type": "simpletest",
-			"php": "php5.4",
-			"db": "mongodb",
-			"results": "https://results.drupalci.org/node/9",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/9"
-		},{
-			"id": "10",
-			"type": "simpletest",
-			"php": "php5.5",
-			"db": "mongodb",
-			"results": "https://results.drupalci.org/node/10",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/10"
-		},{
-			"id": "11",
-			"type": "simpletest",
-			"php": "php5.6",
-			"db": "mongodb",
-			"results": "https://results.drupalci.org/node/11",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/11"
-		},{
-			"id": "12",
-			"type": "simpletest",
-			"php": "master",
-			"db": "mongodb",
-			"results": "https://results.drupalci.org/node/12",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/12"
-		},{
-			"id": "13",
-			"type": "phpunit",
-			"php": "5.4",
-			"results": "https://results.drupalci.org/node/13",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/13"
-		},{
-			"id": "14",
-			"type": "codesniffer",
-			"php": "5.4",
-			"results": "https://results.drupalci.org/node/14",
-			"endpoint": "https://api.drupalci.org/drupalci/api/1/job/status/14"
-		}
-	]
-}
-```
 
 ## Phing
 
