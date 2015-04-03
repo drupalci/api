@@ -8,14 +8,34 @@ class Job implements \JsonSerializable {
 
   protected $id = 0;
   protected $title;
-  protected $type;
+  protected $jobType;
+  protected $commit;
   protected $issue;
   protected $created;
   protected $repository;
   protected $branch;
   protected $patch;
   protected $status;
+
+  /**
+   * Human-readable results string. '10 passes, 2 fails, 1 exception.'
+   * @var string
+   */
   protected $result;
+
+  /**
+   * Tags for use by Results and d.o.
+   * @var array
+   */
+  protected $tags;
+
+  /**
+   * Keyed array specifying test environment dependencies.
+   * @var array
+   *   - 'db': Database.
+   *   - 'php': Version.
+   */
+  protected $environment;
   protected $jenkinsUri;
 
   /**
@@ -27,9 +47,13 @@ class Job implements \JsonSerializable {
     $this->created = new \DateTime();
   }
 
+  public static function jsonProperties() {
+    return ['id', 'title', 'jobType', 'status', 'result', 'repository', 'branch', 'commit', 'issue', 'patch', 'tags', 'environment'];
+  }
+
   public static function createFromRequest(Request $request) {
     $query = [];
-    foreach (['title', 'repository', 'branch', 'patch'] as $query_key) {
+    foreach (static::jsonProperties() as $query_key) {
       $query[$query_key] = $request->get($query_key, '');
     }
     // Sanity check.
@@ -99,6 +123,57 @@ class Job implements \JsonSerializable {
    */
   public function getTitle() {
     return $this->title;
+  }
+
+  public function setJobType($job_type) {
+    $this->jobType = $job_type;
+    return $this;
+  }
+
+  public function getJobType() {
+    return $this->jobType;
+  }
+
+  public function setCommit($commit) {
+    $this->commit = $commit;
+    return $this;
+  }
+
+  public function getCommit() {
+    return $this->commit;
+  }
+
+  public function setIssue($issue) {
+    $this->issue = $issue;
+    return $this;
+  }
+
+  public function getIssue() {
+    return $this->issue;
+  }
+
+  public function setTags(array $tags) {
+    if (!is_array($tags)) {
+      $tags = (array) $tags;
+    }
+    $this->tags = $tags;
+    return $this;
+  }
+
+  public function getTags() {
+    return $this->tags;
+  }
+
+  public function setEnvironment(array $environment) {
+    if (!is_array($environment)) {
+      $environment = (array) $environment;
+    }
+    $this->environment = $environment;
+    return $this;
+  }
+
+  public function getEnvironment() {
+    return $this->environment;
   }
 
   /**
@@ -229,18 +304,7 @@ class Job implements \JsonSerializable {
 
   public function jsonSerialize() {
     $result = new \stdClass();
-    $properties = [
-      'id',
-      'title',
-      'issue',
-      'type',
-      'repository',
-      'branch',
-      'patch',
-      'status',
-      'result',
-      'jenkinsUri'
-    ];
+    $properties = static::jsonProperties();
     foreach ($properties as $property) {
       $result->$property = $this->$property;
     }

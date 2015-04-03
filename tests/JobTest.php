@@ -9,10 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
  * @coversDefaultClass \API\Job
  */
 class JobTest extends \PHPUnit_Framework_TestCase {
-  public function testJob() {
-    $job = new Job();
-    $this->assertNotNull($job);
-  }
 
   /**
    * @covers ::createFromRequest
@@ -66,7 +62,7 @@ class JobTest extends \PHPUnit_Framework_TestCase {
     );
     $job = Job::createFromRequest($request);
     $this->assertEquals(
-      '{"id":0,"title":"title_test","issue":null,"type":null,"repository":"repository_test","branch":"branch_test","patch":"patch_test","status":null,"result":null,"jenkinsUri":null}',
+      '{"id":0,"title":"title_test","jobType":null,"status":null,"result":null,"repository":"repository_test","branch":"branch_test","commit":null,"issue":null,"patch":"patch_test","tags":null,"environment":null}',
       json_encode($job->jsonSerialize())
     );
   }
