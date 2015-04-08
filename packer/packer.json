@@ -20,7 +20,6 @@
   "builders": [
     {
       "type":          "amazon-ebs",
-      "region":        "ap-southeast-2",
       "source_ami":    "{{user `source_ami`}}",
       "instance_type": "m3.medium",
       "ssh_username":  "ubuntu",
